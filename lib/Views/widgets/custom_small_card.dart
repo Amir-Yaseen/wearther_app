@@ -23,7 +23,7 @@ class CustomSmallCard extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 10
+          horizontal: 8
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
