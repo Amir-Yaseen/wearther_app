@@ -5,13 +5,13 @@ import 'package:wearther_app/const/style/color_pallete.dart';
 class CustomSmallCard extends StatelessWidget {
   const CustomSmallCard({
     super.key,
-    required this.textstyle, required this.text, required this.subtext, required this.smalltext, required this.image,
+    required this.textstyle, required this.text, required this.subtext, required this.image,
   });
 
   final TextTheme textstyle;
   final String text;
   final String subtext;
-  final String smalltext;
+  // final String smalltext;
   final String image;
 
   @override
@@ -26,7 +26,7 @@ class CustomSmallCard extends StatelessWidget {
           horizontal: 8
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
@@ -47,10 +47,7 @@ class CustomSmallCard extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30),
-              child: Text(smalltext,style: textstyle.bodySmall!.copyWith(color: Palette.black),),
-            )
+            // Text(smalltext,style: textstyle.bodySmall!.copyWith(color: Palette.black),)
           ],
         ),
       ),

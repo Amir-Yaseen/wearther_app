@@ -1,64 +1,110 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:wearther_app/const/constants.dart';
+import 'package:wearther_app/Blocs/weather/weather_bloc.dart';
+import 'package:wearther_app/Models/weather_model.dart';
 import 'package:wearther_app/const/style/color_pallete.dart';
 import 'package:wearther_app/const/style/size_config.dart';
 
 class HourlyForcastWidget extends StatelessWidget {
-  const HourlyForcastWidget({
+  HourlyForcastWidget({
     super.key,
     required this.textstyle,
+    required this.dayForcast,
   });
 
   final TextTheme textstyle;
+  final List<Hour>? dayForcast;
+  String? locationDateTime;
+  int? totalStringLength;
+  int? timeToInt;
+  String? currentTime;
+  String? time;
+  // final CurrentCondition condition;
 
   @override
   Widget build(BuildContext context) {
+    // condition = currentCondition!.firstWhere((element) => element.code == weatherModel!.currentWeather!.condition!.code);
+
     return Container(
       width: getProportionateScreenWidth(360),
-      height:getProportionateScreenHeight(150),
+      height: getProportionateScreenHeight(180),
       decoration: BoxDecoration(
-        color: Palette.cardpurple,
-        borderRadius: BorderRadius.circular(18)
-      ),
+          color: Palette.cardpurple, borderRadius: BorderRadius.circular(18)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(
           children: [
             Row(
               children: [
-                CircleAvatar(backgroundColor: Palette.white,child: SvgPicture.asset('assets/icons/history_toggle_off.svg'),maxRadius: 15,),
+                CircleAvatar(
+                  backgroundColor: Palette.white,
+                  child:
+                      SvgPicture.asset('assets/icons/history_toggle_off.svg'),
+                  maxRadius: 15,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Text('Hourly forecast',style: textstyle.labelSmall!.copyWith(color: Palette.black),),
+                  child: Text(
+                    'Hourly forecast',
+                    style: textstyle.labelSmall!.copyWith(color: Palette.black),
+                  ),
                 ),
               ],
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: SizedBox(
-                height: getProportionateScreenHeight(80),
+                height: getProportionateScreenHeight(110),
                 child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: hourlyForcastList.length,
-              
-                  itemBuilder:  (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      children: [
-                        Text(hourlyForcastList[index].time,style: textstyle.titleMedium!.copyWith(color: Palette.black),),
-                        SvgPicture.asset(hourlyForcastList[index].image),
-                        Text(hourlyForcastList[index].tempereature,style: textstyle.titleLarge!.copyWith(color: Palette.black),),
-                      ],
-                    ),
-                  );
-                }),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: dayForcast!.length,
+                    itemBuilder: (context, index) {
+                      final currentCondition = context
+                          .read<WeatherBloc>()
+                          .conditionList!
+                          .firstWhere((element) =>
+                              element.code ==
+                              dayForcast![index].condition!.code);
+                      locationDateTime = dayForcast![index].time;
+                      totalStringLength = locationDateTime!.length;
+                      // date = locationDateTime!.substring(0, 10);
+                      time = locationDateTime!.substring(11, 13);
+                      //
+                      timeToInt = int.parse(time.toString())+1;
+                      if (timeToInt! <= 12) {
+                        currentTime = '${timeToInt} AM';
+                      } else {
+                        
+                        currentTime = '${timeToInt!-12} PM';
+                      } //
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          children: [
+                            Text(
+                              (currentTime).toString(),
+                              style: textstyle.titleMedium!
+                                  .copyWith(color: Palette.black),
+                            ),
+                            Image.asset(
+                              'assets/icons/day/${currentCondition.icon}.png',
+                              width: getProportionateScreenWidth(50),
+                            ),
+                            Text(
+                              dayForcast![index].tempC.toString(),
+                              style: textstyle.titleLarge!
+                                  .copyWith(color: Palette.black),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
               ),
             )
           ],
         ),
-      ) ,
+      ),
     );
   }
 }

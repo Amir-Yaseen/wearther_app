@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wearther_app/Views/pages/forcase_screen.dart';
 import 'package:wearther_app/Views/pages/home_screen.dart';
 import 'package:wearther_app/Views/pages/splash_screen.dart';
+import 'package:wearther_app/Views/pages/testing.dart';
 import 'package:wearther_app/router/route_names.dart';
 
 class RouteGenerator{
@@ -11,6 +13,10 @@ class RouteGenerator{
         return MaterialPageRoute(builder: (_)=> const SplashScreen());
       case homeScreenRoute:
         return MaterialPageRoute(builder: (_)=> const HomeScreen());
+      case forcaseScreenRoute:
+        return MaterialPageRoute(builder: (_)=> const ForcastScreen());
+      // case testing:
+      //   return MaterialPageRoute(builder: (_)=> const TESTING());
       default :
       return _errorRoute();
     }

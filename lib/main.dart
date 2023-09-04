@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wearther_app/Blocs/category/bloc/selected_button_bloc.dart';
+import 'package:wearther_app/Blocs/weather/weather_bloc.dart';
 import 'package:wearther_app/router/route_names.dart';
 
+import 'Repositry/services/weather_service.dart';
+import 'Repositry/weather_repo.dart';
 import 'const/style/color_pallete.dart';
 
 import 'router/app_routes.dart';
@@ -15,13 +20,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute:RouteGenerator.onGenerateRoute ,
-      initialRoute:homeScreenRoute,
-      navigatorKey: RouteGenerator.navigatorkey,
-      theme: ThemeDataCustom(),
-      //
+    return  RepositoryProvider(
+      create: (context) => Repository(weatherService: WeatherService()),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<WeatherBloc>(create: (context)=>WeatherBloc(repository: context.read<Repository>())..add(WeatherInitialFeatchEvent())),
+          BlocProvider<SelectedButtonBloc>(create: (context)=>SelectedButtonBloc()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute:RouteGenerator.onGenerateRoute ,
+          initialRoute:splashRoute,
+          navigatorKey: RouteGenerator.navigatorkey,
+          theme: ThemeDataCustom(),
+          //
+        ),
+      ),
     );
   }
 
@@ -33,7 +47,7 @@ primaryColor: Palette.appbackground,
 
 textTheme: GoogleFonts.dmSansTextTheme().copyWith(
   bodyLarge: GoogleFonts.dmSans(
-    textStyle: const TextStyle(color: Palette.white,fontSize: 112,)
+    textStyle: const TextStyle(color: Palette.white,fontSize: 90,)
   ),
   displayMedium: GoogleFonts.roboto(
     textStyle: const TextStyle(color: Palette.black, fontSize: 57),
