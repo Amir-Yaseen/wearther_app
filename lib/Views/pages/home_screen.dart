@@ -312,8 +312,8 @@ class WeatherDetailsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SunRiseWidget(textstyle: textstyle, icon: 'assets/icons/nights_stay.svg', text: 'Sunrise', time: '4:20 AM',),
-              SunRiseWidget(textstyle: textstyle, icon: 'assets/icons/history_toggle_off.svg', text: 'Sunset', time: '4:50 PM',),
+              SunRiseWidget(textstyle: textstyle, icon: 'assets/icons/nights_stay.svg', text: 'Sunrise', time: weatherFeatched!.forecast!.forecastday![0].astro!.sunrise.toString(),),
+              SunRiseWidget(textstyle: textstyle, icon: 'assets/icons/history_toggle_off.svg', text: 'Sunset', time: weatherFeatched!.forecast!.forecastday![0].astro!.sunset.toString(),),
           
             ],
           ),
