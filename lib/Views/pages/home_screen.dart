@@ -23,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // final WeatherBloc weatherBloc = WeatherBloc();
+
   @override
   void initState() {
     // weatherBloc.add(WeatherInitialFeatchEvent());
@@ -53,9 +54,10 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomeFullScreen extends StatelessWidget {
-  const HomeFullScreen({super.key, required this.textstyle});
+  HomeFullScreen({super.key, required this.textstyle});
 
   final TextTheme textstyle;
+  bool isSelected = false;
   // final WeatherFeatched weatherFeatched;
 
   @override
@@ -76,7 +78,7 @@ class HomeFullScreen extends StatelessWidget {
                       children: [
                         CustomButton(
                           textstyle: textstyle,
-                          isSelected: true,
+                          isSelected: isSelected,
                           text: 'Today',
                           function: () {
                             context.read<SelectedButtonBloc>().add(
@@ -118,17 +120,21 @@ class HomeFullScreen extends StatelessWidget {
                           isToday: true,
                         );
                       case TomarrowButtonState:
-                        //  final weatherFeatched = state as WeatherFeatched;
-                        // print("weather location${weatherLocation.currentWeather\}");
-                        return const Center(
-                            child: Text('Tomarrow',
-                                style: TextStyle(color: Colors.black)));
+                        return WeatherDetailsScreen(
+                          textstyle: textstyle,
+                          weatherFeatched:
+                              context.read<WeatherBloc>().weatherModel,
+                          isToday: false,
+                        );
+                      //  final weatherFeatched = state as WeatherFeatched;
+                      // print("weather location${weatherLocation.currentWeather\}");
+                      // return const Center(
+                      //     child: Text('Tomarrow',
+                      //         style: TextStyle(color: Colors.black)));
                       case TenDaysButtonState:
                         //  final weatherFeatched = state as WeatherFeatched;
                         // print("weather location${weatherLocation.currentWeather\}");
-                        return const Center(
-                            child: Text('Tendays',
-                                style: TextStyle(color: Colors.black)));
+                        return ForcastDaysList(textstyle: textstyle, forecast: context.read<WeatherBloc>().weatherModel!.forecast,);
                       default:
                         print("Error :/");
 
@@ -140,6 +146,110 @@ class HomeFullScreen extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class ForcastDaysList extends StatelessWidget {
+  const ForcastDaysList({
+    super.key,
+    required this.textstyle, required this.forecast,
+  });
+
+  final TextTheme textstyle;
+  final Forecast? forecast;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: SizedBox(
+        height: getProportionateScreenHeight(370),
+        child: ListView.builder(
+          padding: EdgeInsets.only(top: 5),
+          itemCount: forecast!.forecastday!.length,
+          itemBuilder:(context, index) {
+            return ForcastDayCard(textstyle: textstyle, forecastday: forecast!.forecastday![index],);
+        },),
+      ),
+    );
+  }
+}
+
+class ForcastDayCard extends StatelessWidget {
+  const ForcastDayCard({
+    super.key,
+    required this.textstyle, required this.forecastday,
+  });
+
+  final TextTheme textstyle;
+  final Forecastday forecastday;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Container(
+        width: getProportionateScreenWidth(360),
+        height: getProportionateScreenHeight(84),
+        decoration: BoxDecoration(
+            color: Palette.cardpurple,
+            borderRadius: BorderRadius.circular(18)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Today',style: textstyle.bodyMedium!.copyWith(color: Palette.black,fontWeight: FontWeight.w600),),
+                  Text(forecastday.day!.condition!.text.toString(),style: textstyle.bodyMedium!.copyWith(color: Palette.black,))
+                ],
+              ),
+              Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("${forecastday.day!.maxtempC!.toStringAsFixed(0)}℃",style: textstyle.bodyMedium!.copyWith(color: Palette.black,fontWeight: FontWeight.w600)),
+                      Text("${forecastday.day!.mintempC!.toStringAsFixed(0)}℃",style: textstyle.bodyMedium!.copyWith(color: Palette.black,fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+              
+                  Padding(
+                    padding: const EdgeInsets.only(top:20),
+                    child: Row(
+                      children: [
+                        Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Container(
+                        color: Palette.black,
+                        width: 1,height: 30,
+                      ),
+                    ),
+                    SvgPicture.asset('assets/icons/cloud.svg',width: 50,),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10,left: 10),
+                    child: CircleAvatar(
+                      backgroundColor: Palette.white,
+                      radius: 10,
+                      child: SvgPicture.asset('assets/icons/expand_more.svg'),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -208,7 +318,9 @@ class WeatherDetailsScreen extends StatelessWidget {
           ),
           HourlyForcastWidget(
             textstyle: textstyle,
-            dayForcast: weatherFeatched!.forecast!.forecastday![0].hour,
+            dayForcast: isToday
+                ? weatherFeatched!.forecast!.forecastday![0].hour
+                : weatherFeatched!.forecast!.forecastday![1].hour,
           ),
           const SizedBox(
             height: 20,
@@ -278,8 +390,7 @@ class WeatherDetailsScreen extends StatelessWidget {
                       CircleAvatar(
                         backgroundColor: Palette.white,
                         maxRadius: 15,
-                        child:
-                            SvgPicture.asset('assets/icons/rainy.svg'),
+                        child: SvgPicture.asset('assets/icons/rainy.svg'),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -291,16 +402,39 @@ class WeatherDetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 25,),
+                  const SizedBox(
+                    height: 25,
+                  ),
                   SizedBox(
                     height: getProportionateScreenHeight(200),
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
                       scrollDirection: Axis.vertical,
-                      itemCount: weatherFeatched!.forecast!.forecastday![0].hour!.length,
-                      itemBuilder:(context, index) {
-                      return CustomProgressBar(chanceOfRain: weatherFeatched!.forecast!.forecastday![0].hour![index].chanceOfRain,dayTime: weatherFeatched!.forecast!.forecastday![0].hour![index].time.toString(),textstyle: textstyle,);
-                    },),
+                      itemCount: isToday
+                          ? weatherFeatched!
+                              .forecast!.forecastday![0].hour!.length
+                          : weatherFeatched!
+                              .forecast!.forecastday![1].hour!.length,
+                      itemBuilder: (context, index) {
+                        return isToday
+                            ? CustomProgressBar(
+                                chanceOfRain: weatherFeatched!.forecast!
+                                    .forecastday![0].hour![index].chanceOfRain,
+                                dayTime: weatherFeatched!
+                                    .forecast!.forecastday![0].hour![index].time
+                                    .toString(),
+                                textstyle: textstyle,
+                              )
+                            : CustomProgressBar(
+                                chanceOfRain: weatherFeatched!.forecast!
+                                    .forecastday![1].hour![index].chanceOfRain,
+                                dayTime: weatherFeatched!
+                                    .forecast!.forecastday![1].hour![index].time
+                                    .toString(),
+                                textstyle: textstyle,
+                              );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -312,12 +446,43 @@ class WeatherDetailsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SunRiseWidget(textstyle: textstyle, icon: 'assets/icons/nights_stay.svg', text: 'Sunrise', time: weatherFeatched!.forecast!.forecastday![0].astro!.sunrise.toString(),),
-              SunRiseWidget(textstyle: textstyle, icon: 'assets/icons/history_toggle_off.svg', text: 'Sunset', time: weatherFeatched!.forecast!.forecastday![0].astro!.sunset.toString(),),
-          
+              isToday
+                  ? SunRiseWidget(
+                      textstyle: textstyle,
+                      icon: 'assets/icons/nights_stay.svg',
+                      text: 'Sunrise',
+                      time: weatherFeatched!
+                          .forecast!.forecastday![0].astro!.sunrise
+                          .toString(),
+                    )
+                  : SunRiseWidget(
+                      textstyle: textstyle,
+                      icon: 'assets/icons/nights_stay.svg',
+                      text: 'Sunrise',
+                      time: weatherFeatched!
+                          .forecast!.forecastday![1].astro!.sunrise
+                          .toString(),
+                    ),
+              isToday
+                  ? SunRiseWidget(
+                      textstyle: textstyle,
+                      icon: 'assets/icons/history_toggle_off.svg',
+                      text: 'Sunset',
+                      time: weatherFeatched!
+                          .forecast!.forecastday![0].astro!.sunset
+                          .toString())
+                  : SunRiseWidget(
+                      textstyle: textstyle,
+                      icon: 'assets/icons/history_toggle_off.svg',
+                      text: 'Sunset',
+                      time: weatherFeatched!
+                          .forecast!.forecastday![1].astro!.sunset
+                          .toString())
             ],
           ),
-          SizedBox(height: getProportionateScreenHeight(30),)
+          SizedBox(
+            height: getProportionateScreenHeight(30),
+          )
         ],
       ),
     );
@@ -327,7 +492,10 @@ class WeatherDetailsScreen extends StatelessWidget {
 class SunRiseWidget extends StatelessWidget {
   const SunRiseWidget({
     super.key,
-    required this.textstyle, required this.text, required this.icon, required this.time,
+    required this.textstyle,
+    required this.text,
+    required this.icon,
+    required this.time,
   });
 
   final TextTheme textstyle;
@@ -338,11 +506,10 @@ class SunRiseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-            width: getProportionateScreenWidth(170),
-            height: getProportionateScreenHeight(65),
-            decoration: BoxDecoration(
-      color: Palette.cardpurple,
-      borderRadius: BorderRadius.circular(18)),
+      width: getProportionateScreenWidth(170),
+      height: getProportionateScreenHeight(65),
+      decoration: BoxDecoration(
+          color: Palette.cardpurple, borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
@@ -357,20 +524,25 @@ class SunRiseWidget extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(text,style: textstyle.labelSmall!.copyWith(color: Palette.black),),
-                Text(time,style: textstyle.labelSmall!.copyWith(color: Palette.black,fontWeight: FontWeight.w600))
+                Text(
+                  text,
+                  style: textstyle.labelSmall!.copyWith(color: Palette.black),
+                ),
+                Text(time,
+                    style: textstyle.labelSmall!.copyWith(
+                        color: Palette.black, fontWeight: FontWeight.w600))
               ],
             ),
             Padding(
-              padding:  EdgeInsets.only(top: getProportionateScreenHeight(22)),
-              child: Text('4h ago',style:textstyle.titleMedium!.copyWith(color: Palette.black) ,),
+              padding: EdgeInsets.only(top: getProportionateScreenHeight(22)),
+              child: Text(
+                '4h ago',
+                style: textstyle.titleMedium!.copyWith(color: Palette.black),
+              ),
             )
           ],
         ),
       ),
-          );
+    );
   }
 }
-
-
-
