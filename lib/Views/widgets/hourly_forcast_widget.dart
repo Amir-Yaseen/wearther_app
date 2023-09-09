@@ -6,6 +6,8 @@ import 'package:wearther_app/Models/weather_model.dart';
 import 'package:wearther_app/const/style/color_pallete.dart';
 import 'package:wearther_app/const/style/size_config.dart';
 
+import '../../Models/current_condition.dart';
+
 class HourlyForcastWidget extends StatelessWidget {
   HourlyForcastWidget({
     super.key,
@@ -20,7 +22,7 @@ class HourlyForcastWidget extends StatelessWidget {
   int? timeToInt;
   String? currentTime;
   String? time;
-  // final CurrentCondition condition;
+  CurrentCondition? currentCondition;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class HourlyForcastWidget extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: dayForcast!.length,
                     itemBuilder: (context, index) {
-                      final currentCondition = context
+                      currentCondition = context
                           .read<WeatherBloc>()
                           .conditionList!
                           .firstWhere((element) =>
@@ -88,7 +90,7 @@ class HourlyForcastWidget extends StatelessWidget {
                                   .copyWith(color: Palette.black),
                             ),
                             Image.asset(
-                              'assets/icons/day/${currentCondition.icon}.png',
+                              'assets/icons/day/${currentCondition!.icon}.png',
                               width: getProportionateScreenWidth(50),
                             ),
                             Text(
