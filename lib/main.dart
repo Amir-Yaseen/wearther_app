@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wearther_app/Blocs/bloc/navigator_bloc.dart';
 import 'package:wearther_app/Blocs/category/bloc/selected_button_bloc.dart';
 import 'package:wearther_app/Blocs/weather/weather_bloc.dart';
 import 'package:wearther_app/router/route_names.dart';
@@ -12,11 +13,13 @@ import 'const/style/color_pallete.dart';
 import 'router/app_routes.dart';
 
 void main(){
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+   MyApp({super.key});
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<WeatherBloc>(create: (context)=>WeatherBloc(repository: context.read<Repository>())..add(WeatherInitialFeatchEvent())),
           BlocProvider<SelectedButtonBloc>(create: (context)=>SelectedButtonBloc()),
+          BlocProvider<NavigatorBloc>(create: (context)=>NavigatorBloc(navigatorKey: RouteGenerator.navigatorkey)),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:wearther_app/Views/pages/home_screen.dart';
+import 'package:wearther_app/Models/forcastNavidationModel.dart';
+import 'package:wearther_app/Models/weather_model.dart';
 import 'package:wearther_app/Views/widgets/custom_progress_bar.dart';
 import 'package:wearther_app/Views/widgets/custom_small_card.dart';
 import 'package:wearther_app/Views/widgets/sunrise_sunset.dart';
 import 'package:wearther_app/const/style/color_pallete.dart';
 import 'package:wearther_app/const/style/size_config.dart';
-
-import '../../Models/weather_model.dart';
 import 'hourly_forcast_widget.dart';
 class WeatherDetailsScreen extends StatelessWidget {
   const WeatherDetailsScreen({
     super.key,
-    required this.textstyle,
-    required this.weatherFeatched,
-    required this.isToday,
+    // required this.textstyle,
+    // // required this.weatherFeatched,
+    // required this.isToday, 
+    required this.forcastNavigationModel,
+    // WeatherModel? weatherFeatched, required bool isToday,
   });
-
-  final TextTheme textstyle;
-  final WeatherModel? weatherFeatched;
-  final bool isToday;
+  final ForcastNavigationModel forcastNavigationModel;
+  // final TextTheme textstyle;
+  // final WeatherModel? weatherFeatched;
+  // final bool isToday;
 
   @override
   Widget build(BuildContext context) {
@@ -37,44 +38,44 @@ class WeatherDetailsScreen extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             children: [
               CustomSmallCard(
-                textstyle: textstyle,
+                textstyle: forcastNavigationModel.textstyle,
                 text: 'Wind speed',
-                subtext: isToday
-                    ? "${weatherFeatched!.currentWeather!.windKph} km/h"
-                    : "${weatherFeatched!.forecast!.forecastday![1].day!.maxwindKph} km/h",
+                subtext: forcastNavigationModel.isToday
+                    ? "${forcastNavigationModel.weatherFeatched!.currentWeather!.windKph} km/h"
+                    : "${forcastNavigationModel.weatherFeatched!.forecast!.forecastday![1].day!.maxwindKph} km/h",
                 image: 'assets/icons/air.svg',
               ),
               CustomSmallCard(
-                textstyle: textstyle,
+                textstyle: forcastNavigationModel.textstyle,
                 text: 'Rain chance',
-                subtext: isToday
-                    ? '${weatherFeatched!.forecast!.forecastday![0].day!.dailyChanceOfRain} %'
-                    : '${weatherFeatched!.forecast!.forecastday![1].day!.dailyChanceOfRain} %',
+                subtext: forcastNavigationModel.isToday
+                    ? '${forcastNavigationModel.weatherFeatched!.forecast!.forecastday![0].day!.dailyChanceOfRain} %'
+                    : '${forcastNavigationModel.weatherFeatched!.forecast!.forecastday![1].day!.dailyChanceOfRain} %',
                 image: 'assets/icons/rainy.svg',
               ),
               CustomSmallCard(
-                textstyle: textstyle,
+                textstyle: forcastNavigationModel.textstyle,
                 text: 'Pressure',
-                subtext: isToday
-                    ? "${weatherFeatched!.currentWeather!.humidity} in"
-                    : "${weatherFeatched!.forecast!.forecastday![1].day!.humidity} in",
+                subtext: forcastNavigationModel.isToday
+                    ? "${forcastNavigationModel.weatherFeatched!.currentWeather!.humidity} in"
+                    : "${forcastNavigationModel.weatherFeatched!.forecast!.forecastday![1].day!.humidity} in",
                 image: 'assets/icons/waves.svg',
               ),
               CustomSmallCard(
-                textstyle: textstyle,
+                textstyle: forcastNavigationModel.textstyle,
                 text: 'UV Index',
-                subtext: isToday
-                    ? "${weatherFeatched!.currentWeather!.uv} km/h"
-                    : "${weatherFeatched!.forecast!.forecastday![1].day!.uv} km/h",
+                subtext: forcastNavigationModel.isToday
+                    ? "${forcastNavigationModel.weatherFeatched!.currentWeather!.uv} km/h"
+                    : "${forcastNavigationModel.weatherFeatched!.forecast!.forecastday![1].day!.uv} km/h",
                 image: 'assets/icons/light_mode.svg',
               ),
             ],
           ),
           HourlyForcastWidget(
-            textstyle: textstyle,
-            dayForcast: isToday
-                ? weatherFeatched!.forecast!.forecastday![0].hour
-                : weatherFeatched!.forecast!.forecastday![1].hour,
+            textstyle: forcastNavigationModel.textstyle,
+            dayForcast: forcastNavigationModel.isToday
+                ? forcastNavigationModel.weatherFeatched!.forecast!.forecastday![0].hour
+                : forcastNavigationModel.weatherFeatched!.forecast!.forecastday![1].hour,
           ),
           const SizedBox(
             height: 20,
@@ -150,7 +151,7 @@ class WeatherDetailsScreen extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                           'Chance of rain',
-                          style: textstyle.labelSmall!
+                          style: forcastNavigationModel.textstyle.labelSmall!
                               .copyWith(color: Palette.black),
                         ),
                       ),
@@ -164,28 +165,28 @@ class WeatherDetailsScreen extends StatelessWidget {
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
                       scrollDirection: Axis.vertical,
-                      itemCount: isToday
-                          ? weatherFeatched!
+                      itemCount: forcastNavigationModel.isToday
+                          ? forcastNavigationModel.weatherFeatched!
                               .forecast!.forecastday![0].hour!.length
-                          : weatherFeatched!
+                          : forcastNavigationModel.weatherFeatched!
                               .forecast!.forecastday![1].hour!.length,
                       itemBuilder: (context, index) {
-                        return isToday
+                        return forcastNavigationModel.isToday
                             ? CustomProgressBar(
-                                chanceOfRain: weatherFeatched!.forecast!
+                                chanceOfRain: forcastNavigationModel.weatherFeatched!.forecast!
                                     .forecastday![0].hour![index].chanceOfRain,
-                                dayTime: weatherFeatched!
+                                dayTime: forcastNavigationModel.weatherFeatched!
                                     .forecast!.forecastday![0].hour![index].time
                                     .toString(),
-                                textstyle: textstyle,
+                                textstyle: forcastNavigationModel.textstyle,
                               )
                             : CustomProgressBar(
-                                chanceOfRain: weatherFeatched!.forecast!
+                                chanceOfRain: forcastNavigationModel.weatherFeatched!.forecast!
                                     .forecastday![1].hour![index].chanceOfRain,
-                                dayTime: weatherFeatched!
+                                dayTime: forcastNavigationModel.weatherFeatched!
                                     .forecast!.forecastday![1].hour![index].time
                                     .toString(),
-                                textstyle: textstyle,
+                                textstyle: forcastNavigationModel.textstyle,
                               );
                       },
                     ),
@@ -200,36 +201,36 @@ class WeatherDetailsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              isToday
+              forcastNavigationModel.isToday
                   ? SunRiseWidget(
-                      textstyle: textstyle,
+                      textstyle: forcastNavigationModel.textstyle,
                       icon: 'assets/icons/nights_stay.svg',
                       text: 'Sunrise',
-                      time: weatherFeatched!
+                      time:forcastNavigationModel.weatherFeatched!
                           .forecast!.forecastday![0].astro!.sunrise
                           .toString(),
                     )
                   : SunRiseWidget(
-                      textstyle: textstyle,
+                      textstyle: forcastNavigationModel.textstyle,
                       icon: 'assets/icons/nights_stay.svg',
                       text: 'Sunrise',
-                      time: weatherFeatched!
+                      time: forcastNavigationModel.weatherFeatched!
                           .forecast!.forecastday![1].astro!.sunrise
                           .toString(),
                     ),
-              isToday
+              forcastNavigationModel.isToday
                   ? SunRiseWidget(
-                      textstyle: textstyle,
+                      textstyle: forcastNavigationModel.textstyle,
                       icon: 'assets/icons/history_toggle_off.svg',
                       text: 'Sunset',
-                      time: weatherFeatched!
+                      time: forcastNavigationModel.weatherFeatched!
                           .forecast!.forecastday![0].astro!.sunset
                           .toString())
                   : SunRiseWidget(
-                      textstyle: textstyle,
+                      textstyle: forcastNavigationModel.textstyle,
                       icon: 'assets/icons/history_toggle_off.svg',
                       text: 'Sunset',
-                      time: weatherFeatched!
+                      time: forcastNavigationModel.weatherFeatched!
                           .forecast!.forecastday![1].astro!.sunset
                           .toString())
             ],

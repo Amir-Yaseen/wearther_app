@@ -6,8 +6,8 @@ import 'package:wearther_app/const/constants.dart';
 import 'package:wearther_app/const/style/color_pallete.dart';
 import 'package:wearther_app/const/style/size_config.dart';
 
-class ForcastScreen extends StatelessWidget {
-  const ForcastScreen({super.key});
+class ForcastDetailsScreen extends StatelessWidget {
+  const ForcastDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

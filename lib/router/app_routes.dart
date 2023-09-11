@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:wearther_app/Models/forcastNavidationModel.dart';
 import 'package:wearther_app/Views/pages/forcase_screen.dart';
 import 'package:wearther_app/Views/pages/home_screen.dart';
 import 'package:wearther_app/Views/pages/splash_screen.dart';
-import 'package:wearther_app/Views/pages/testing.dart';
+import 'package:wearther_app/Views/widgets/weather_detail_screen.dart';
 import 'package:wearther_app/router/route_names.dart';
 
 class RouteGenerator{
   static GlobalKey<NavigatorState> navigatorkey = GlobalKey<NavigatorState>();
   static Route? onGenerateRoute(RouteSettings routeSettings){
+   final arguments = routeSettings.arguments;
+    // final arguments=routeSettings.arguments as Map<String,String>;
     switch(routeSettings.name){
       case splashRoute:
         return MaterialPageRoute(builder: (_)=> const SplashScreen());
       case homeScreenRoute:
         return MaterialPageRoute(builder: (_)=> const HomeScreen());
       case forcaseScreenRoute:
-        return MaterialPageRoute(builder: (_)=> const ForcastScreen());
-      // case testing:
-      //   return MaterialPageRoute(builder: (_)=> const TESTING());
+        return MaterialPageRoute(builder: (_)=> const ForcastDetailsScreen());
+      case weatherDetail:
+      if (arguments is ForcastNavigationModel) {
+          return MaterialPageRoute(builder: (_) => WeatherDetailsScreen(forcastNavigationModel: arguments));
+        }
+        // return MaterialPageRoute(builder: (_)=>  WeatherDetailsScreen(forcastNavigationModel: arguments as ForcastNavigationModel,));
       default :
       return _errorRoute();
     }

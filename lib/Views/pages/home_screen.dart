@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:wearther_app/Blocs/bloc/navigator_bloc.dart';
 import 'package:wearther_app/Blocs/category/bloc/selected_button_bloc.dart';
 import 'package:wearther_app/Blocs/weather/weather_bloc.dart';
+import 'package:wearther_app/Models/forcastNavidationModel.dart';
 import 'package:wearther_app/Models/weather_model.dart';
 import 'package:wearther_app/Views/widgets/custom_button.dart';
-import 'package:wearther_app/Views/widgets/custom_small_card.dart';
-import 'package:wearther_app/Views/widgets/hourly_forcast_widget.dart';
 import 'package:wearther_app/Views/widgets/top_home_section.dart';
 import 'package:wearther_app/Views/widgets/weather_detail_screen.dart';
 import 'package:wearther_app/const/constants.dart';
 import 'package:wearther_app/const/style/color_pallete.dart';
 import 'package:wearther_app/const/style/size_config.dart';
-
 import '../../Models/current_condition.dart';
-import '../widgets/custom_progress_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -116,17 +114,15 @@ class HomeFullScreen extends StatelessWidget {
                       case TodayButtonState:
                         // print("Loading");
                         return WeatherDetailsScreen(
-                          textstyle: textstyle,
-                          weatherFeatched:
-                              context.read<WeatherBloc>().weatherModel,
-                          isToday: true,
+                          // textstyle: textstyle,
+                         
+                          forcastNavigationModel: ForcastNavigationModel(isToday: true, textstyle: textstyle, weatherFeatched: context.read<WeatherBloc>().weatherModel,),
                         );
                       case TomarrowButtonState:
                         return WeatherDetailsScreen(
-                          textstyle: textstyle,
-                          weatherFeatched:
-                              context.read<WeatherBloc>().weatherModel,
-                          isToday: false,
+                          // textstyle: textstyle,
+                         
+                          forcastNavigationModel: ForcastNavigationModel(isToday: false, textstyle: textstyle, weatherFeatched: context.read<WeatherBloc>().weatherModel,),
                         );
                       //  final weatherFeatched = state as WeatherFeatched;
                       // print("weather location${weatherLocation.currentWeather\}");
@@ -204,7 +200,8 @@ class ForcastDayCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
         onTap: (){
-          print('object');
+         context.read<NavigatorBloc>().add(
+                                ForcastCardSelected(isToday:true, textstyle: textstyle,weatherFeatched:context.read<WeatherBloc>().weatherModel ,));
         },
         child: Container(
           width: getProportionateScreenWidth(360),
