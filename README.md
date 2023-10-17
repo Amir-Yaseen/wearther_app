@@ -30,5 +30,5 @@ We use the Bloc state management pattern to manage and control the application's
 
 ##Technologies Used
 Flutter: A popular open-source framework for building natively compiled applications for mobile from a single codebase.
+<iframe width="560" height="315" src="https://youtube.com/shorts/Vh8hY-8HklQ" frameborder="0" allowfullscreen></iframe>
 
-[![Video Thumbnail](https://drive.google.com/file/d/1KN9gckOGbA9O1fcyoPn9s2Jnmfncyjxi/view?usp=sharing)](https://youtube.com/shorts/Vh8hY-8HklQ)
