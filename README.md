@@ -32,3 +32,4 @@ We use the Bloc state management pattern to manage and control the application's
 Flutter: A popular open-source framework for building natively compiled applications for mobile from a single codebase.
 <iframe width="560" height="315" src="https://youtube.com/shorts/Vh8hY-8HklQ" frameborder="0" allowfullscreen></iframe>
 
+![ezgif com-video-to-gif](https://github.com/Amir-Yaseen/wearther_app/assets/63316291/f7205e27-ea8c-4476-9557-952bd8eee5db)
